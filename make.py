@@ -51,7 +51,7 @@ h1{font-size:21px;margin:16px 0 6px}p{color:var(--muted);font-size:15px;line-hei
 <main class="card">
 <img src="icons/icon-192.png" alt="">
 <h1>@NAME@</h1>
-<p>บันทึกค่ากะ/เบี้ยเลี้ยงวันหยุด พร้อมพิกัด GPS (ระบบ v2)</p>
+<p>บันทึกค่ากะ/เบี้ยเลี้ยงวันหยุด</p>
 <a class="btn go" href="@URL@">เปิดหน้าบันทึก</a>
 <button class="btn ins" id="install" hidden>ติดตั้งลงหน้าจอมือถือ</button>
 <div class="how">
