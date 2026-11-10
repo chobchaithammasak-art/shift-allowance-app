@@ -29,10 +29,9 @@ PAGE=r'''<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>@NAME@</title>
 <script>
-/* ไอคอนบนหน้าจอ: เปิดแล้วไปหน้าบันทึกทันที */
 (function(){var s=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true||/[?&]source=pwa/.test(location.search);
 if(s){location.replace("@URL@");return;}
-/* เปิดจาก LINE: ให้ LINE เปิดในเบราว์เซอร์ปกติ (Chrome/Safari) อัตโนมัติ */
+/* เปิดจาก LINE: ให้ LINE เปิดในเบราว์เซอร์ปกติ (Chrome/Safari) */
 if(/\bLine\//i.test(navigator.userAgent)&&!/openExternalBrowser=1/.test(location.search)){
 location.replace(location.pathname+(location.search?location.search+'&':'?')+'openExternalBrowser=1'+location.hash);}})();
 </script>
@@ -48,125 +47,106 @@ location.replace(location.pathname+(location.search?location.search+'&':'?')+'op
 <meta name="apple-mobile-web-app-title" content="@SHORT@">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
-:root{--theme:@THEME@;--bg:#f3f5f8;--text:#1d2733;--muted:#5f6b7a;--card:#fff;--line:#d6dce4;--warn:#fff4e5;--warnt:#8a4b00;--ok:#e8f6ec;--okt:#1c6b34}
-@media(prefers-color-scheme:dark){:root{--bg:#10151c;--text:#e8edf3;--muted:#9aa7b5;--card:#18202a;--line:#2a3441;--warn:#3a2a14;--warnt:#ffcf8a;--ok:#163322;--okt:#9be3b2}}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Sarabun","Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
-.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 20px;text-align:center}
-.logo{width:104px;height:104px;border-radius:24px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
-h1{font-size:21px;margin:14px 0 4px}p{color:var(--muted);font-size:15px;line-height:1.55;margin:4px 0}
+:root{--theme:@THEME@;--bg:#f3f5f8;--text:#1d2733;--muted:#5f6b7a;--card:#fff;--line:#d6dce4;--warn:#fff4e5;--warnt:#8a4b00;--ok:#e8f6ec;--okt:#1c6b34;--sel:#fff3e8}
+@media(prefers-color-scheme:dark){:root{--bg:#10151c;--text:#e8edf3;--muted:#9aa7b5;--card:#18202a;--line:#2a3441;--warn:#3a2a14;--warnt:#ffcf8a;--ok:#163322;--okt:#9be3b2;--sel:#33240f}}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Sarabun","Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:16px}
+.card{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px;text-align:center}
+.logo{width:88px;height:88px;border-radius:20px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+h1{font-size:20px;margin:12px 0 2px}p{color:var(--muted);font-size:15px;line-height:1.55;margin:4px 0}
+.q{font-weight:700;color:var(--text);margin:18px 0 8px;font-size:16px}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.os{border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;padding:14px 6px;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+.os svg{display:block;margin:0 auto 6px;width:34px;height:34px}
+.os small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+.os[aria-pressed=true]{border-color:var(--theme);background:var(--sel);color:var(--theme)}
 .btn{display:block;width:100%;padding:15px;margin-top:12px;border:0;border-radius:12px;font:inherit;font-weight:700;font-size:17px;text-decoration:none;cursor:pointer;text-align:center}
 .pri{background:var(--theme);color:#fff}.sec{background:transparent;color:var(--theme);border:2px solid var(--theme)}
-.box{text-align:left;margin-top:16px;padding:14px 16px;border-radius:12px;font-size:15px;line-height:1.65}
+.box{text-align:left;margin-top:14px;padding:12px 14px;border-radius:12px;font-size:14.5px;line-height:1.6}
 .warn{background:var(--warn);color:var(--warnt)}.ok{background:var(--ok);color:var(--okt)}
-.steps{text-align:left;margin-top:16px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.65}
-.steps h2{font-size:16px;margin:0 0 6px}.steps ol{margin:0;padding-left:22px}.steps li{margin:6px 0}
-.k{display:inline-block;min-width:26px;padding:0 6px;border:1px solid var(--line);border-radius:6px;font-weight:700;text-align:center;background:var(--bg)}
+.steps{text-align:left;margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.6}
+.steps h2{font-size:16px;margin:0 0 4px}.steps h3{font-size:14px;margin:12px 0 0;color:var(--muted)}
+.steps ol{margin:0;padding:0}.steps li{display:flex;gap:10px;align-items:flex-start;list-style:none;margin:9px 0}
+.n{flex:0 0 24px;height:24px;border-radius:50%;background:var(--theme);color:#fff;font-weight:700;text-align:center;line-height:24px;font-size:13px}
+.k{display:inline-block;min-width:24px;padding:0 6px;border:1px solid var(--line);border-radius:6px;font-weight:700;text-align:center;background:var(--bg)}
+.ic{width:21px;height:21px;vertical-align:-5px;margin:0 2px;color:#0a84ff}
 .small{font-size:13px;color:var(--muted);margin-top:14px}
 [hidden]{display:none!important}
-.ic{width:22px;height:22px;vertical-align:-5px;margin:0 2px;color:#0a84ff}
-.ios li{display:flex;gap:10px;align-items:flex-start;list-style:none;margin:10px 0}
-.ios ol{padding-left:0}.n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--theme);color:#fff;font-weight:700;text-align:center;line-height:26px;font-size:14px}
-.arrow{position:fixed;z-index:9;left:50%;transform:translateX(-50%);background:var(--theme);color:#fff;font-weight:700;font-size:14px;padding:8px 14px;border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:nowrap;animation:bob 1s ease-in-out infinite}
-.arrow.b{bottom:calc(10px + env(safe-area-inset-bottom))}.arrow.t{top:calc(10px + env(safe-area-inset-top))}
-.arrow.r{left:auto;right:10px;transform:none}
-@keyframes bob{50%{margin-bottom:-6px;margin-top:6px}}
 </style></head><body>
 <main class="card">
 <img class="logo" src="icons/icon-192.png" alt="">
 <h1>@NAME@</h1>
 <p>บันทึกค่ากะ/เบี้ยเลี้ยงวันหยุด</p>
 
-<div id="inapp" class="box warn" hidden></div>
-<a id="chrome" class="btn pri" hidden>เปิดใน Chrome เพื่อติดตั้ง</a>
-<a id="safari" class="btn pri" hidden>เปิดใน Safari เพื่อติดตั้ง</a>
-<button id="copy" class="btn sec" hidden>คัดลอกลิงก์</button>
+<div class="q">เลือกมือถือของคุณ</div>
+<div class="pick">
+<button class="os" id="b-and" aria-pressed="false"><svg viewBox="0 0 24 24" fill="#3ddc84"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.4 11.4 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android<small>Samsung, Oppo, Vivo, Xiaomi ฯลฯ</small></button>
+<button class="os" id="b-ios" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>iPhone / iPad<small>iOS</small></button>
+</div>
 
-<button id="install" class="btn pri">ติดตั้งไอคอนลงหน้าจอมือถือ</button>
+<!-- Android -->
+<section id="p-and" hidden>
+<button id="install" class="btn pri">ติดตั้งไอคอนเลย</button>
 <div id="done" class="box ok" hidden>✓ ติดตั้งแล้ว — กดไอคอน <b>@SHORT@</b> บนหน้าจอมือถือเพื่อเข้าบันทึก</div>
-<div id="steps" class="steps" hidden></div>
-<div id="arrow" class="arrow" hidden></div>
+<div class="steps">
+<h2>วิธีติดตั้งบน Android</h2>
+<h3>Chrome (แนะนำ)</h3>
+<ol><li><span class="n">1</span><span>กดปุ่ม "ติดตั้งไอคอนเลย" ด้านบน แล้วกด <b>"ติดตั้ง"</b></span></li>
+<li><span class="n">2</span><span>ถ้าไม่มีหน้าต่างขึ้น: กดเมนู <span class="k">⋮</span> มุมขวาบน &gt; <b>"ติดตั้งแอป"</b> หรือ <b>"เพิ่มลงในหน้าจอหลัก"</b> &gt; <b>"ติดตั้ง"</b></span></li>
+<li><span class="n">3</span><span>รอ 2–3 วินาที ไอคอนส้ม <b>@SHORT@</b> จะอยู่บนหน้าจอ</span></li></ol>
+<h3>Samsung Internet</h3>
+<ol><li><span class="n">1</span><span>กดเมนู <span class="k">≡</span> ด้านล่างขวา &gt; <b>"เพิ่มหน้าไปยัง"</b> &gt; <b>"หน้าจอหลัก"</b> &gt; <b>"เพิ่ม"</b></span></li></ol>
+<h3>ถ้าเปิดอยู่ในแอป LINE / Facebook</h3>
+<ol><li><span class="n">1</span><span>กดเมนู <span class="k">⋮</span> มุมขวาบน &gt; <b>"เปิดในเบราว์เซอร์"</b> หรือกด "คัดลอกลิงก์" ด้านล่าง แล้วไปวางในแอป <b>Chrome</b></span></li></ol>
+</div>
+</section>
 
+<!-- iOS -->
+<section id="p-ios" hidden>
+<div class="box warn">iPhone ต้องติดตั้งผ่านแอป <b>Safari</b> เท่านั้น — ถ้าเปิดอยู่ในแอปอื่น (LINE, Facebook, Google) ให้กด "คัดลอกลิงก์" ด้านล่าง แล้วไปวางในแอป Safari</div>
+<div class="steps">
+<h2>วิธีติดตั้งบน iPhone (Safari)</h2>
+<ol><li><span class="n">1</span><span>กดปุ่มแชร์ @SHARE@ ด้านล่างกลางจอ<br><small>iOS 26: กดปุ่ม <span class="k">⋯</span> ด้านล่างขวาก่อน แล้วกด @SHARE@ "แชร์" — iPad: ปุ่มแชร์อยู่ด้านบนขวา</small></span></li>
+<li><span class="n">2</span><span>เลื่อนลงแล้วกด @ADD@ <b>"เพิ่มไปยังหน้าจอโฮม"</b><br><small>ถ้าไม่เห็น เลื่อนลงสุดแล้วกด "แก้ไขการทำงาน"/"ดูเพิ่มเติม"</small></span></li>
+<li><span class="n">3</span><span>กด <b>"เพิ่ม"</b> มุมขวาบน — ไอคอนส้ม <b>@SHORT@</b> จะอยู่บนหน้าจอโฮม</span></li></ol>
+<h3>ใช้ Chrome บน iPhone</h3>
+<ol><li><span class="n">1</span><span>กดปุ่มแชร์ @SHARE@ ที่ช่องที่อยู่ด้านบนขวา &gt; <b>"เพิ่มไปยังหน้าจอโฮม"</b> &gt; <b>"เพิ่ม"</b> (ถ้าไม่มีเมนูนี้ ให้ใช้ Safari)</span></li></ol>
+</div>
+</section>
+
+<button id="copy" class="btn sec" hidden>คัดลอกลิงก์</button>
 <a class="btn sec" href="@URL@">เปิดหน้าบันทึก (ไม่ติดตั้ง)</a>
 <p class="small">กดไอคอนบนหน้าจอ จะเข้าหน้าบันทึกทันที (กด "อนุญาต" เมื่อมือถือถามตำแหน่ง)</p>
 </main>
 <script>
 var ua=navigator.userAgent,$=function(i){return document.getElementById(i)};
-var iOS=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-var android=/Android/i.test(ua);
-var inApp=/\bLine\/|FBAN|FBAV|FB_IAB|Instagram|Messenger|MicroMessenger|TikTok|Twitter|; wv\)/i.test(ua);
-var samsung=/SamsungBrowser/i.test(ua);
-var iosApp=iOS&&/GSA\/|YJApp|DuckDuckGo/.test(ua);   /* แอป Google ฯลฯ บน iPhone ติดตั้งไม่ได้ */
-if(iosApp)inApp=true;
-var iosOther=iOS&&/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
-var iPad=iOS&&!/iPhone|iPod/.test(ua);
-var sv=(ua.match(/Version\/(\d+)/)||[])[1]|0, ov=(ua.match(/OS (\d+)_/)||[])[1]|0;
-var ios26=sv>=26||ov>=26;
-var huaweiEtc=android&&/HuaweiBrowser|MiuiBrowser|HeyTapBrowser|VivoBrowser|OPR\/|Firefox/i.test(ua);
+var isIOS=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 var link=location.origin+location.pathname;
 var dp=null;
-var SHARE='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M8 10H6v10h12V10h-2"/></svg>';
-var ADD='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
-var DOTS='<span class="k">⋯</span>';
-
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}
+try{if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;});
-window.addEventListener('appinstalled',function(){dp=null;showDone();});
+window.addEventListener('appinstalled',function(){dp=null;$('done').hidden=false;$('install').hidden=true;});
 
-function showDone(){$('install').hidden=true;$('steps').hidden=true;$('done').hidden=false;}
-function steps(title,items){var s=$('steps');s.innerHTML='<h2>'+title+'</h2><ol><li>'+items.join('</li><li>')+'</li></ol>';s.hidden=false;s.scrollIntoView({behavior:'smooth',block:'center'});}
-
-/* แอปอื่นที่ติดตั้งไม่ได้ (LINE ที่เปิดเองไม่ได้, Facebook, Messenger ฯลฯ) */
-if(inApp){
-  $('install').hidden=true;
-  if(android){
-    $('inapp').innerHTML='<b>หน้านี้เปิดอยู่ในแอป (LINE, Facebook, Google ฯลฯ) ซึ่งติดตั้งไอคอนไม่ได้</b><br>กดปุ่มด้านล่างเพื่อเปิดใน Chrome แล้วกด "ติดตั้ง" อีกครั้ง';
-    var c=$('chrome');c.href='intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(link)+';end';c.hidden=false;
-  }else{
-    $('inapp').innerHTML='<b>หน้านี้เปิดอยู่ในแอป (LINE, Facebook, Google ฯลฯ) ซึ่งติดตั้งไอคอนไม่ได้</b><br>กดปุ่ม <b>"เปิดใน Safari"</b> ด้านล่าง<br>ถ้าไม่เปิด: กด <span class="k">⋯</span> หรือ '+SHARE+' แล้วเลือก <b>"เปิดใน Safari"</b> หรือกด "คัดลอกลิงก์" แล้วไปวางในแอป Safari';
-    var sf=$('safari');sf.href='x-safari-https://'+location.host+location.pathname;sf.hidden=false;
-  }
-  $('inapp').hidden=false;$('copy').hidden=false;
-}else if(huaweiEtc){
-  $('inapp').innerHTML='แนะนำให้ติดตั้งผ่าน <b>Chrome</b> — กดปุ่มด้านล่าง (ถ้าไม่สำเร็จ ลองทำตามขั้นตอนเมนูของเบราว์เซอร์นี้ได้)';
-  var c2=$('chrome');c2.href='intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(link)+';end';c2.hidden=false;$('inapp').hidden=false;
+function choose(os,scroll){
+  $('b-and').setAttribute('aria-pressed',os==='and');$('b-ios').setAttribute('aria-pressed',os==='ios');
+  $('p-and').hidden=os!=='and';$('p-ios').hidden=os!=='ios';$('copy').hidden=false;
+  try{history.replaceState(null,'','#'+os);}catch(e){}
+  if(scroll)$('p-'+os).scrollIntoView({behavior:'smooth',block:'start'});
 }
+$('b-and').onclick=function(){choose('and',true)};
+$('b-ios').onclick=function(){choose('ios',true)};
+var h=location.hash.replace('#','');
+choose(h==='and'||h==='ios'?h:(isIOS?'ios':(/Android/i.test(ua)?'and':'')),false);
+if(!/Android/i.test(ua)&&!isIOS&&!h){$('p-and').hidden=true;$('p-ios').hidden=true;$('copy').hidden=true;$('b-and').setAttribute('aria-pressed',false);$('b-ios').setAttribute('aria-pressed',false);}
 
-$('copy').addEventListener('click',function(){
+$('install').onclick=function(){
+  if(dp){dp.prompt();dp.userChoice.then(function(r){dp=null;if(r.outcome==='accepted'){$('done').hidden=false;$('install').hidden=true;}});}
+  else{$('p-and').querySelector('.steps').scrollIntoView({behavior:'smooth',block:'start'});}
+};
+$('copy').onclick=function(){
   var done=function(){$('copy').textContent='✓ คัดลอกแล้ว — ไปวางในเบราว์เซอร์';};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(done,fallback);}else fallback();
-  function fallback(){var t=document.createElement('textarea');t.value=link;document.body.appendChild(t);t.select();try{document.execCommand('copy');done();}catch(e){prompt('คัดลอกลิงก์นี้',link);}t.remove();}
-});
-
-$('install').addEventListener('click',function(){
-  if(dp){dp.prompt();dp.userChoice.then(function(r){dp=null;if(r.outcome==='accepted')showDone();else manual();});return;}
-  manual();
-});
-function iosSteps(title,items,arrowTxt,pos){
-  var s=$('steps');s.className='steps ios';
-  s.innerHTML='<h2>'+title+'</h2><ol>'+items.map(function(t,i){return '<li><span class="n">'+(i+1)+'</span><span>'+t+'</span></li>';}).join('')+'</ol>';
-  s.hidden=false;
-  var a=$('arrow');if(arrowTxt){a.textContent=arrowTxt;a.className='arrow '+pos;a.hidden=false;setTimeout(function(){a.hidden=true;},15000);}
-}
-function iosGuide(){
-  var last='กด <b>"เพิ่ม"</b> มุมขวาบน — ไอคอนส้ม <b>@SHORT@</b> จะอยู่บนหน้าจอโฮม';
-  var addHome='เลื่อนลงแล้วกด '+ADD+' <b>"เพิ่มไปยังหน้าจอโฮม"</b> (ถ้าไม่เห็น เลื่อนลงสุดแล้วกด "แก้ไขการทำงาน" หรือ "ดูเพิ่มเติม")';
-  if(/CriOS/.test(ua)) iosSteps('ติดตั้งบน iPhone (Chrome)',['กดปุ่มแชร์ '+SHARE+' ที่ช่องที่อยู่ด้านบนขวา',addHome,last,'ถ้าไม่มีเมนูนี้ (iOS เก่า) กดปุ่ม "เปิดใน Safari" ด้านล่าง'],'↑ ปุ่มแชร์อยู่ด้านบนขวา','t r');
-  else if(/EdgiOS/.test(ua)) iosSteps('ติดตั้งบน iPhone (Edge)',['กดปุ่มเมนู '+DOTS+' ด้านล่างกลางจอ','กด '+SHARE+' <b>"แชร์"</b>',addHome,last],'↓ กดปุ่มเมนู ⋯','b');
-  else if(/FxiOS/.test(ua)) iosSteps('ติดตั้งบน iPhone (Firefox)',['กดปุ่มเมนู <span class="k">☰</span> ด้านล่างขวา','กด '+SHARE+' <b>"แชร์"</b>',addHome,last],'↓ กดปุ่มเมนู ☰','b r');
-  else if(iPad) iosSteps('ติดตั้งบน iPad (Safari)',['กดปุ่มแชร์ '+SHARE+' ด้านบนขวา (ถ้าไม่เห็น กด '+DOTS+' ก่อน)',addHome,last],'↑ ปุ่มแชร์อยู่ด้านบนขวา','t r');
-  else if(ios26) iosSteps('ติดตั้งบน iPhone (Safari)',['กดปุ่ม '+DOTS+' ด้านล่างขวา (ถ้าไม่เห็นแถบด้านล่าง ให้เลื่อนหน้าขึ้นเล็กน้อย)','กด '+SHARE+' <b>"แชร์"</b>',addHome,'เปิด <b>"เปิดเป็นเว็บแอป"</b> ไว้ แล้ว'+last.slice(0)],'↓ กดปุ่ม ⋯ ตรงนี้','b r');
-  else iosSteps('ติดตั้งบน iPhone (Safari)',['กดปุ่มแชร์ '+SHARE+' ด้านล่างกลางจอ (ถ้าไม่เห็นแถบด้านล่าง ให้แตะด้านล่างจอ หรือเลื่อนหน้าขึ้นเล็กน้อย)',addHome,last],'↓ ปุ่มแชร์อยู่ตรงนี้','b');
-  if(iosOther){var sf=$('safari');sf.href='x-safari-https://'+location.host+location.pathname;sf.className='btn sec';sf.hidden=false;}
-  $('steps').scrollIntoView({behavior:'smooth',block:'center'});
-}
-/* iPhone/iPad ไม่มีหน้าต่างติดตั้งอัตโนมัติ: แสดงวิธีทันที */
-if(iOS&&!inApp){$('install').textContent='ดูวิธีติดตั้งอีกครั้ง';setTimeout(iosGuide,300);}
-function manual(){
-  if(iOS){iosGuide();return;}
-  if(samsung) steps('ติดตั้งบน Samsung Internet',['กดเมนู <span class="k">≡</span> ด้านล่างขวา','เลือก <b>"เพิ่มหน้าไปยัง"</b> &gt; <b>"หน้าจอหลัก"</b>','กด <b>"เพิ่ม"</b>']);
-  else if(android) steps('ติดตั้งบน Android (Chrome)',['กดเมนู <span class="k">⋮</span> มุมขวาบน','เลือก <b>"ติดตั้งแอป"</b> หรือ <b>"เพิ่มลงในหน้าจอหลัก"</b>','กด <b>"ติดตั้ง"</b> / <b>"เพิ่ม"</b> แล้วรอ 2–3 วินาที','ถ้าไม่เห็นเมนูนี้: ปิด Chrome แล้วเปิดลิงก์ใหม่อีกครั้ง หรืออัปเดต Chrome ใน Play Store']);
-  else steps('ติดตั้งบนมือถือ',['เปิดลิงก์นี้บนมือถือด้วย Chrome (Android) หรือ Safari (iPhone)','กดปุ่ม "ติดตั้งไอคอนลงหน้าจอมือถือ" อีกครั้ง']);
-}
+  function fb(){var t=document.createElement('textarea');t.value=link;document.body.appendChild(t);t.select();try{document.execCommand('copy');done();}catch(e){prompt('คัดลอกลิงก์นี้',link);}t.remove();}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(done,fb);}else fb();
+};
 </script></body></html>
 '''
 SW="""// service worker: เก็บหน้า launcher ไว้ในเครื่อง (ทำให้ Chrome ทุกรุ่นยอมติดตั้ง และเปิดได้แม้เน็ตช้า)
@@ -177,7 +157,7 @@ self.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(func
 self.addEventListener('fetch',function(e){
   var r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;
   e.respondWith(fetch(r).then(function(res){if(res&&res.ok){var cp=res.clone();caches.open(C).then(function(c){c.put(r,cp);});}return res;})
-    .catch(function(){return caches.match(r,{ignoreSearch:true}).then(function(m){return m||caches.match('./index.html');});}));
+    .catch(function(){return caches.match(r,{ignoreSearch:true}).then(function(m){return m||caches.match('./index.html').then(function(x){return x||new Response('<meta charset=utf-8><p style="font:18px sans-serif;padding:20px">ไม่มีอินเทอร์เน็ต กรุณาลองใหม่</p>',{headers:{'Content-Type':'text/html; charset=utf-8'}});});});}));
 });
 """
 def w(path,text):
@@ -189,7 +169,9 @@ def render(svg,png,size):
 O='_site'
 shutil.rmtree(O,ignore_errors=True)
 h=PAGE
-for k,v in {'@NAME@':NAME,'@SHORT@':SHORT,'@THEME@':THEME,'@URL@':URL}.items(): h=h.replace(k,v)
+SHARE_SVG='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M8 10H6v10h12V10h-2"/></svg>'
+ADD_SVG='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>'
+for k,v in {'@SHARE@':SHARE_SVG,'@ADD@':ADD_SVG,'@NAME@':NAME,'@SHORT@':SHORT,'@THEME@':THEME,'@URL@':URL}.items(): h=h.replace(k,v)
 import time
 w(O+'/index.html',h); w(O+'/sw.js',SW.replace('@VER@',str(int(time.time())))); w(O+'/.nojekyll','')
 w(O+'/manifest.webmanifest',json.dumps({"id":"/shift-allowance-app/","name":NAME,"short_name":SHORT,"description":"บันทึกค่ากะ/เบี้ยเลี้ยงวันหยุด พร้อม GPS","lang":"th","start_url":"./?source=pwa","scope":"./","prefer_related_applications":False,"display":"standalone","orientation":"portrait","background_color":"#ffffff","theme_color":THEME,"icons":[{"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"icons/icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]},ensure_ascii=False,indent=1))
