@@ -40,6 +40,9 @@ location.replace(location.pathname+(location.search?location.search+'&':'?')+'op
 <meta name="theme-color" content="@THEME@">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="@SHORT@">
@@ -60,6 +63,13 @@ h1{font-size:21px;margin:14px 0 4px}p{color:var(--muted);font-size:15px;line-hei
 .k{display:inline-block;min-width:26px;padding:0 6px;border:1px solid var(--line);border-radius:6px;font-weight:700;text-align:center;background:var(--bg)}
 .small{font-size:13px;color:var(--muted);margin-top:14px}
 [hidden]{display:none!important}
+.ic{width:22px;height:22px;vertical-align:-5px;margin:0 2px;color:#0a84ff}
+.ios li{display:flex;gap:10px;align-items:flex-start;list-style:none;margin:10px 0}
+.ios ol{padding-left:0}.n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--theme);color:#fff;font-weight:700;text-align:center;line-height:26px;font-size:14px}
+.arrow{position:fixed;z-index:9;left:50%;transform:translateX(-50%);background:var(--theme);color:#fff;font-weight:700;font-size:14px;padding:8px 14px;border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.25);white-space:nowrap;animation:bob 1s ease-in-out infinite}
+.arrow.b{bottom:calc(10px + env(safe-area-inset-bottom))}.arrow.t{top:calc(10px + env(safe-area-inset-top))}
+.arrow.r{left:auto;right:10px;transform:none}
+@keyframes bob{50%{margin-bottom:-6px;margin-top:6px}}
 </style></head><body>
 <main class="card">
 <img class="logo" src="icons/icon-192.png" alt="">
@@ -68,11 +78,13 @@ h1{font-size:21px;margin:14px 0 4px}p{color:var(--muted);font-size:15px;line-hei
 
 <div id="inapp" class="box warn" hidden></div>
 <a id="chrome" class="btn pri" hidden>เปิดใน Chrome เพื่อติดตั้ง</a>
+<a id="safari" class="btn pri" hidden>เปิดใน Safari เพื่อติดตั้ง</a>
 <button id="copy" class="btn sec" hidden>คัดลอกลิงก์</button>
 
 <button id="install" class="btn pri">ติดตั้งไอคอนลงหน้าจอมือถือ</button>
 <div id="done" class="box ok" hidden>✓ ติดตั้งแล้ว — กดไอคอน <b>@SHORT@</b> บนหน้าจอมือถือเพื่อเข้าบันทึก</div>
 <div id="steps" class="steps" hidden></div>
+<div id="arrow" class="arrow" hidden></div>
 
 <a class="btn sec" href="@URL@">เปิดหน้าบันทึก (ไม่ติดตั้ง)</a>
 <p class="small">กดไอคอนบนหน้าจอ จะเข้าหน้าบันทึกทันที (กด "อนุญาต" เมื่อมือถือถามตำแหน่ง)</p>
@@ -83,10 +95,18 @@ var iOS=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator
 var android=/Android/i.test(ua);
 var inApp=/\bLine\/|FBAN|FBAV|FB_IAB|Instagram|Messenger|MicroMessenger|TikTok|Twitter|; wv\)/i.test(ua);
 var samsung=/SamsungBrowser/i.test(ua);
-var iosOther=iOS&&/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(ua);
+var iosApp=iOS&&/GSA\/|YJApp|DuckDuckGo/.test(ua);   /* แอป Google ฯลฯ บน iPhone ติดตั้งไม่ได้ */
+if(iosApp)inApp=true;
+var iosOther=iOS&&/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+var iPad=iOS&&!/iPhone|iPod/.test(ua);
+var sv=(ua.match(/Version\/(\d+)/)||[])[1]|0, ov=(ua.match(/OS (\d+)_/)||[])[1]|0;
+var ios26=sv>=26||ov>=26;
 var huaweiEtc=android&&/HuaweiBrowser|MiuiBrowser|HeyTapBrowser|VivoBrowser|OPR\/|Firefox/i.test(ua);
 var link=location.origin+location.pathname;
 var dp=null;
+var SHARE='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M8 10H6v10h12V10h-2"/></svg>';
+var ADD='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+var DOTS='<span class="k">⋯</span>';
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;});
@@ -99,10 +119,11 @@ function steps(title,items){var s=$('steps');s.innerHTML='<h2>'+title+'</h2><ol>
 if(inApp){
   $('install').hidden=true;
   if(android){
-    $('inapp').innerHTML='<b>หน้านี้เปิดอยู่ในแอป LINE/แชท ซึ่งติดตั้งไอคอนไม่ได้</b><br>กดปุ่มด้านล่างเพื่อเปิดใน Chrome แล้วกด "ติดตั้ง" อีกครั้ง';
+    $('inapp').innerHTML='<b>หน้านี้เปิดอยู่ในแอป (LINE, Facebook, Google ฯลฯ) ซึ่งติดตั้งไอคอนไม่ได้</b><br>กดปุ่มด้านล่างเพื่อเปิดใน Chrome แล้วกด "ติดตั้ง" อีกครั้ง';
     var c=$('chrome');c.href='intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(link)+';end';c.hidden=false;
   }else{
-    $('inapp').innerHTML='<b>หน้านี้เปิดอยู่ในแอป LINE/แชท ซึ่งติดตั้งไอคอนไม่ได้</b><br>กดปุ่ม <span class="k">⋯</span> หรือ <span class="k">↗</span> แล้วเลือก <b>"เปิดใน Safari"</b><br>หรือกด "คัดลอกลิงก์" แล้วไปวางในแอป Safari';
+    $('inapp').innerHTML='<b>หน้านี้เปิดอยู่ในแอป (LINE, Facebook, Google ฯลฯ) ซึ่งติดตั้งไอคอนไม่ได้</b><br>กดปุ่ม <b>"เปิดใน Safari"</b> ด้านล่าง<br>ถ้าไม่เปิด: กด <span class="k">⋯</span> หรือ '+SHARE+' แล้วเลือก <b>"เปิดใน Safari"</b> หรือกด "คัดลอกลิงก์" แล้วไปวางในแอป Safari';
+    var sf=$('safari');sf.href='x-safari-https://'+location.host+location.pathname;sf.hidden=false;
   }
   $('inapp').hidden=false;$('copy').hidden=false;
 }else if(huaweiEtc){
@@ -120,10 +141,29 @@ $('install').addEventListener('click',function(){
   if(dp){dp.prompt();dp.userChoice.then(function(r){dp=null;if(r.outcome==='accepted')showDone();else manual();});return;}
   manual();
 });
+function iosSteps(title,items,arrowTxt,pos){
+  var s=$('steps');s.className='steps ios';
+  s.innerHTML='<h2>'+title+'</h2><ol>'+items.map(function(t,i){return '<li><span class="n">'+(i+1)+'</span><span>'+t+'</span></li>';}).join('')+'</ol>';
+  s.hidden=false;
+  var a=$('arrow');if(arrowTxt){a.textContent=arrowTxt;a.className='arrow '+pos;a.hidden=false;setTimeout(function(){a.hidden=true;},15000);}
+}
+function iosGuide(){
+  var last='กด <b>"เพิ่ม"</b> มุมขวาบน — ไอคอนส้ม <b>@SHORT@</b> จะอยู่บนหน้าจอโฮม';
+  var addHome='เลื่อนลงแล้วกด '+ADD+' <b>"เพิ่มไปยังหน้าจอโฮม"</b> (ถ้าไม่เห็น เลื่อนลงสุดแล้วกด "แก้ไขการทำงาน" หรือ "ดูเพิ่มเติม")';
+  if(/CriOS/.test(ua)) iosSteps('ติดตั้งบน iPhone (Chrome)',['กดปุ่มแชร์ '+SHARE+' ที่ช่องที่อยู่ด้านบนขวา',addHome,last,'ถ้าไม่มีเมนูนี้ (iOS เก่า) กดปุ่ม "เปิดใน Safari" ด้านล่าง'],'↑ ปุ่มแชร์อยู่ด้านบนขวา','t r');
+  else if(/EdgiOS/.test(ua)) iosSteps('ติดตั้งบน iPhone (Edge)',['กดปุ่มเมนู '+DOTS+' ด้านล่างกลางจอ','กด '+SHARE+' <b>"แชร์"</b>',addHome,last],'↓ กดปุ่มเมนู ⋯','b');
+  else if(/FxiOS/.test(ua)) iosSteps('ติดตั้งบน iPhone (Firefox)',['กดปุ่มเมนู <span class="k">☰</span> ด้านล่างขวา','กด '+SHARE+' <b>"แชร์"</b>',addHome,last],'↓ กดปุ่มเมนู ☰','b r');
+  else if(iPad) iosSteps('ติดตั้งบน iPad (Safari)',['กดปุ่มแชร์ '+SHARE+' ด้านบนขวา (ถ้าไม่เห็น กด '+DOTS+' ก่อน)',addHome,last],'↑ ปุ่มแชร์อยู่ด้านบนขวา','t r');
+  else if(ios26) iosSteps('ติดตั้งบน iPhone (Safari)',['กดปุ่ม '+DOTS+' ด้านล่างขวา (ถ้าไม่เห็นแถบด้านล่าง ให้เลื่อนหน้าขึ้นเล็กน้อย)','กด '+SHARE+' <b>"แชร์"</b>',addHome,'เปิด <b>"เปิดเป็นเว็บแอป"</b> ไว้ แล้ว'+last.slice(0)],'↓ กดปุ่ม ⋯ ตรงนี้','b r');
+  else iosSteps('ติดตั้งบน iPhone (Safari)',['กดปุ่มแชร์ '+SHARE+' ด้านล่างกลางจอ (ถ้าไม่เห็นแถบด้านล่าง ให้แตะด้านล่างจอ หรือเลื่อนหน้าขึ้นเล็กน้อย)',addHome,last],'↓ ปุ่มแชร์อยู่ตรงนี้','b');
+  if(iosOther){var sf=$('safari');sf.href='x-safari-https://'+location.host+location.pathname;sf.className='btn sec';sf.hidden=false;}
+  $('steps').scrollIntoView({behavior:'smooth',block:'center'});
+}
+/* iPhone/iPad ไม่มีหน้าต่างติดตั้งอัตโนมัติ: แสดงวิธีทันที */
+if(iOS&&!inApp){$('install').textContent='ดูวิธีติดตั้งอีกครั้ง';setTimeout(iosGuide,300);}
 function manual(){
-  if(iOS&&iosOther) steps('ติดตั้งบน iPhone (Chrome)',['กดปุ่มแชร์ <span class="k">↗</span> ที่ช่องที่อยู่ด้านบน','เลื่อนลงแล้วเลือก <b>"เพิ่มไปยังหน้าจอโฮม"</b>','กด <b>"เพิ่ม"</b> มุมขวาบน','ถ้าไม่มีเมนูนี้ ให้เปิดลิงก์นี้ในแอป <b>Safari</b> แทน']);
-  else if(iOS) steps('ติดตั้งบน iPhone (Safari)',['กดปุ่มแชร์ <span class="k">↗</span> ด้านล่างจอ (iOS ใหม่: กด <span class="k">⋯</span> ก่อน แล้วกด "แชร์")','เลื่อนลงแล้วเลือก <b>"เพิ่มไปยังหน้าจอโฮม"</b> (ถ้าไม่เห็น กด "ดูเพิ่มเติม")','กด <b>"เพิ่ม"</b> มุมขวาบน','ไอคอนส้ม <b>@SHORT@</b> จะอยู่บนหน้าจอ']);
-  else if(samsung) steps('ติดตั้งบน Samsung Internet',['กดเมนู <span class="k">≡</span> ด้านล่างขวา','เลือก <b>"เพิ่มหน้าไปยัง"</b> &gt; <b>"หน้าจอหลัก"</b>','กด <b>"เพิ่ม"</b>']);
+  if(iOS){iosGuide();return;}
+  if(samsung) steps('ติดตั้งบน Samsung Internet',['กดเมนู <span class="k">≡</span> ด้านล่างขวา','เลือก <b>"เพิ่มหน้าไปยัง"</b> &gt; <b>"หน้าจอหลัก"</b>','กด <b>"เพิ่ม"</b>']);
   else if(android) steps('ติดตั้งบน Android (Chrome)',['กดเมนู <span class="k">⋮</span> มุมขวาบน','เลือก <b>"ติดตั้งแอป"</b> หรือ <b>"เพิ่มลงในหน้าจอหลัก"</b>','กด <b>"ติดตั้ง"</b> / <b>"เพิ่ม"</b> แล้วรอ 2–3 วินาที','ถ้าไม่เห็นเมนูนี้: ปิด Chrome แล้วเปิดลิงก์ใหม่อีกครั้ง หรืออัปเดต Chrome ใน Play Store']);
   else steps('ติดตั้งบนมือถือ',['เปิดลิงก์นี้บนมือถือด้วย Chrome (Android) หรือ Safari (iPhone)','กดปุ่ม "ติดตั้งไอคอนลงหน้าจอมือถือ" อีกครั้ง']);
 }
@@ -155,6 +195,6 @@ w(O+'/index.html',h); w(O+'/sw.js',SW.replace('@VER@',str(int(time.time())))); w
 w(O+'/manifest.webmanifest',json.dumps({"id":"/shift-allowance-app/","name":NAME,"short_name":SHORT,"description":"บันทึกค่ากะ/เบี้ยเลี้ยงวันหยุด พร้อม GPS","lang":"th","start_url":"./?source=pwa","scope":"./","prefer_related_applications":False,"display":"standalone","orientation":"portrait","background_color":"#ffffff","theme_color":THEME,"icons":[{"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"icons/icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]},ensure_ascii=False,indent=1))
 os.makedirs(O+'/icons',exist_ok=True)
 w(O+'/icons/icon.svg',icon())
-for s in (180,192,512): render(icon(),f'{O}/icons/icon-{s}.png',s)
+for s in (152,167,180,192,512): render(icon(),f'{O}/icons/icon-{s}.png',s)
 render(icon(True),O+'/icons/icon-maskable-512.png',512)
 print('built')
